@@ -58,8 +58,8 @@ export default function CalendarPage() {
   // Calendar logic
   const monthStart = startOfMonth(currentDate)
   const monthEnd = endOfMonth(monthStart)
-  const startDate = startOfWeek(monthStart, { weekStarts: 1 }) // Monday start
-  const endDate = endOfWeek(monthEnd, { weekStarts: 1 })
+  const startDate = startOfWeek(monthStart, { weekStartsOn: 1 }) // Monday start
+  const endDate = endOfWeek(monthEnd, { weekStartsOn: 1 })
 
   const dateFormat = "MMMM yyyy"
   const days = eachDayOfInterval({ start: startDate, end: endDate })

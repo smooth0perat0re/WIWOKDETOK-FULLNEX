@@ -16,7 +16,7 @@ const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false })
 const formSchema = z.object({
   title: z.string().min(3, { message: "Title must be at least 3 characters" }),
   description: z.string().optional(),
-  priority: z.enum(['low', 'medium', 'high']).default('medium'),
+  priority: z.enum(['low', 'medium', 'high']),
   ticket_reference: z.string().optional(),
 })
 

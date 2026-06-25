@@ -1,0 +1,268 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model dashboard_photos {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  photo_url  String    @db.VarChar(255)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model dashboard_todos {
+  id           Int       @id @default(autoincrement())
+  user_id      Int?
+  content      String
+  is_completed Boolean?  @default(false)
+  target_date  DateTime? @db.Date
+  position     Int?      @default(0)
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  updated_at   DateTime? @default(now()) @db.Timestamp(6)
+  users        users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model notifications {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  type       String    @db.VarChar(50)
+  title      String    @db.VarChar(255)
+  message    String?
+  is_read    Boolean?  @default(false)
+  remind_at  DateTime? @db.Timestamp(6)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  is_flagged Boolean?  @default(false)
+  deleted_at DateTime? @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model personal_notes {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  title      String?   @db.VarChar(255)
+  content    String?
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model project_members {
+  id         Int       @id @default(autoincrement())
+  project_id Int?
+  user_id    Int?
+  role       String?   @default("member") @db.VarChar(20)
+  joined_at  DateTime? @default(now()) @db.Timestamp(6)
+  projects   projects? @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([project_id, user_id])
+}
+
+model project_notes {
+  id             Int       @id @default(autoincrement())
+  project_id     Int?
+  title          String    @db.VarChar(255)
+  content        String?
+  attachment_url String?
+  created_by     Int?
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  updated_at     DateTime? @default(now()) @db.Timestamp(6)
+  users          users?    @relation(fields: [created_by], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  projects       projects? @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model projects {
+  id              Int               @id @default(autoincrement())
+  workspace_id    Int?
+  name            String            @db.VarChar(200)
+  description     String?
+  status          String?           @default("active") @db.VarChar(30)
+  created_by      Int?
+  created_at      DateTime?         @default(now()) @db.Timestamp(6)
+  icon            String?           @db.VarChar(50)
+  chained_ticket  String?           @db.VarChar(255)
+  project_members project_members[]
+  project_notes   project_notes[]
+  users           users?            @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  workspaces      workspaces?       @relation(fields: [workspace_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tasks           tasks[]
+}
+
+model quicklinks {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  title      String    @db.VarChar(255)
+  url        String
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model recent_activities {
+  id           Int       @id @default(autoincrement())
+  user_id      Int?
+  action       String    @db.VarChar(100)
+  target_type  String    @db.VarChar(50)
+  target_id    Int?
+  target_url   String?
+  target_title String?   @db.VarChar(255)
+  created_at   DateTime? @default(now()) @db.Timestamp(6)
+  users        users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model sticky_notes {
+  id         Int       @id @default(autoincrement())
+  user_id    Int?
+  content    String
+  color      String?   @default("yellow") @db.VarChar(20)
+  created_at DateTime? @default(now()) @db.Timestamp(6)
+  updated_at DateTime? @default(now()) @db.Timestamp(6)
+  users      users?    @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model task_comments {
+  id             Int       @id @default(autoincrement())
+  task_id        Int?
+  user_id        Int?
+  content        String
+  created_at     DateTime? @default(now()) @db.Timestamp(6)
+  attachment_url String?
+  tasks          tasks?    @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  users          users?    @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+model task_links {
+  id                                     Int       @id @default(autoincrement())
+  source_task_id                         Int?
+  target_task_id                         Int?
+  link_type                              String?   @default("related") @db.VarChar(30)
+  created_by                             Int?
+  created_at                             DateTime? @default(now()) @db.Timestamp(6)
+  users                                  users?    @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tasks_task_links_source_task_idTotasks tasks?    @relation("task_links_source_task_idTotasks", fields: [source_task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  tasks_task_links_target_task_idTotasks tasks?    @relation("task_links_target_task_idTotasks", fields: [target_task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model task_reviews {
+  id          Int       @id @default(autoincrement())
+  task_id     Int?
+  reviewer_id Int?
+  status      String?   @default("pending") @db.VarChar(20)
+  comment     String?
+  reviewed_at DateTime? @db.Timestamp(6)
+  created_at  DateTime? @default(now()) @db.Timestamp(6)
+  users       users?    @relation(fields: [reviewer_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tasks       tasks?    @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model task_status_history {
+  id          Int       @id @default(autoincrement())
+  task_id     Int?
+  from_status String?   @db.VarChar(30)
+  to_status   String    @db.VarChar(30)
+  changed_by  Int?
+  changed_at  DateTime? @default(now()) @db.Timestamp(6)
+  users       users?    @relation(fields: [changed_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  tasks       tasks?    @relation(fields: [task_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model tasks {
+  id                                          Int                   @id @default(autoincrement())
+  workspace_id                                Int?
+  project_id                                  Int?
+  title                                       String                @db.VarChar(255)
+  description                                 String?
+  status                                      String?               @default("backlog") @db.VarChar(30)
+  priority                                    String?               @default("medium") @db.VarChar(20)
+  assignee_id                                 Int?
+  created_by                                  Int?
+  due_date                                    DateTime?             @db.Date
+  ticket_reference                            String?               @db.VarChar(100)
+  created_at                                  DateTime?             @default(now()) @db.Timestamp(6)
+  updated_at                                  DateTime?             @default(now()) @db.Timestamp(6)
+  progress                                    Int?                  @default(0)
+  icon                                        String?               @db.VarChar(10)
+  chained_ticket                              String?               @db.VarChar(255)
+  tags                                        String?
+  task_comments                               task_comments[]
+  task_links_task_links_source_task_idTotasks task_links[]          @relation("task_links_source_task_idTotasks")
+  task_links_task_links_target_task_idTotasks task_links[]          @relation("task_links_target_task_idTotasks")
+  task_reviews                                task_reviews[]
+  task_status_history                         task_status_history[]
+  users_tasks_assignee_idTousers              users?                @relation("tasks_assignee_idTousers", fields: [assignee_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  users_tasks_created_byTousers               users?                @relation("tasks_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  projects                                    projects?             @relation(fields: [project_id], references: [id], onUpdate: NoAction)
+  workspaces                                  workspaces?           @relation(fields: [workspace_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model users {
+  id                             Int                     @id @default(autoincrement())
+  name                           String                  @db.VarChar(100)
+  email                          String                  @unique @db.VarChar(150)
+  password_hash                  String
+  created_at                     DateTime?               @default(now()) @db.Timestamp(6)
+  personal_notes_icon            String?                 @default("📝") @db.VarChar(20)
+  dashboard_photos               dashboard_photos[]
+  dashboard_todos                dashboard_todos[]
+  notifications                  notifications[]
+  personal_notes                 personal_notes[]
+  project_members                project_members[]
+  project_notes                  project_notes[]
+  projects                       projects[]
+  quicklinks                     quicklinks[]
+  recent_activities              recent_activities[]
+  sticky_notes                   sticky_notes[]
+  task_comments                  task_comments[]
+  task_links                     task_links[]
+  task_reviews                   task_reviews[]
+  task_status_history            task_status_history[]
+  tasks_tasks_assignee_idTousers tasks[]                 @relation("tasks_assignee_idTousers")
+  tasks_tasks_created_byTousers  tasks[]                 @relation("tasks_created_byTousers")
+  workspace_invitations          workspace_invitations[]
+  workspace_members              workspace_members[]
+  workspaces                     workspaces[]
+}
+
+model workspace_invitations {
+  id               Int         @id @default(autoincrement())
+  workspace_id     Int?
+  inviter_id       Int?
+  invitee_username String      @db.VarChar(100)
+  status           String?     @default("pending") @db.VarChar(20)
+  created_at       DateTime?   @default(now()) @db.Timestamp(6)
+  users            users?      @relation(fields: [inviter_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  workspaces       workspaces? @relation(fields: [workspace_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([workspace_id, invitee_username])
+}
+
+model workspace_members {
+  id           Int         @id @default(autoincrement())
+  workspace_id Int?
+  user_id      Int?
+  role         String?     @default("member") @db.VarChar(20)
+  joined_at    DateTime?   @default(now()) @db.Timestamp(6)
+  users        users?      @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  workspaces   workspaces? @relation(fields: [workspace_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@unique([workspace_id, user_id])
+}
+
+model workspaces {
+  id                    Int                     @id @default(autoincrement())
+  name                  String                  @db.VarChar(150)
+  slug                  String                  @unique @db.VarChar(100)
+  description           String?
+  is_private            Boolean?                @default(false)
+  created_by            Int?
+  created_at            DateTime?               @default(now()) @db.Timestamp(6)
+  icon                  String?                 @db.VarChar(20)
+  projects              projects[]
+  tasks                 tasks[]
+  workspace_invitations workspace_invitations[]
+  workspace_members     workspace_members[]
+  users                 users?                  @relation(fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}

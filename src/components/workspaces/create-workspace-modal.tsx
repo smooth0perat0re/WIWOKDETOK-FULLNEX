@@ -12,7 +12,7 @@ import api from '@/lib/api'
 const formSchema = z.object({
   name: z.string().min(3, { message: "Name must be at least 3 characters" }),
   description: z.string().optional(),
-  is_private: z.boolean().default(false),
+  is_private: z.boolean(),
   icon: z.string().optional(),
 })
 

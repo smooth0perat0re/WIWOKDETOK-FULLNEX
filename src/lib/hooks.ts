@@ -292,7 +292,7 @@ export const useUpdateTaskAssignee = (projectId: string) => {
 export const useUpdateTask = (projectId: string) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: async (updateData: { taskId: number; title?: string; description?: string; priority?: string; progress?: number; icon?: string }) => {
+        mutationFn: async (updateData: { taskId: number; title?: string; description?: string; priority?: string; progress?: number; icon?: string; chained_ticket?: string; tags?: string }) => {
             const { data } = await api.put(`/tasks/${updateData.taskId}`, updateData);
             return data;
         },

@@ -5,6 +5,7 @@ interface User {
   id: number;
   name: string;
   email: string;
+  personal_notes_icon?: string;
 }
 
 interface AuthState {
