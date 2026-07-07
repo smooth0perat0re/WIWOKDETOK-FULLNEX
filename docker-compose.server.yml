@@ -1,0 +1,33 @@
+name: wiwokdetok
+
+services:
+  wiwok-app:
+    build: .
+    container_name: wiwok-app
+    ports:
+      - "20130:3000"
+    env_file:
+      - .env.server
+    networks:
+      - wiwok-net
+    depends_on:
+      - wiwok-db
+    restart: unless-stopped
+
+  wiwok-db:
+    image: postgres:16-alpine
+    container_name: wiwok-db
+    env_file:
+      - .env.server
+    volumes:
+      - wiwok-db-data:/var/lib/postgresql/data
+    networks:
+      - wiwok-net
+    restart: unless-stopped
+
+networks:
+  wiwok-net:
+    external: true
+
+volumes:
+  wiwok-db-data:
