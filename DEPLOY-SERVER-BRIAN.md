@@ -114,4 +114,23 @@ Password postgres `wiwok-db` juga di-set via env compose, samakan.
 
 ## 7. Log Eksekusi
 
-_(diisi saat deploy)_
+**Deploy 2026-07-07 (Claude Code, sesi "gas deploy") — LIVE ✅**
+
+- **Step 0 Preflight:** orcaone/sob/9router sehat, disk `/` 38G free, port 20130 & 9003 bebas.
+- **Step 1 civitas-dev:** kopian `D:\polibatam-service-civitas` di-transfer via tar-over-ssh (rsync tidak ada di PC) → `~/civitas-dev/`. Compose di server disesuaikan: `container_name: civitas-dev`, port hanya `127.0.0.1:9003:8081`, network `wiwok-net` (external, dibuat sekali). Build cepat (~2 menit, bukan 15–30). Ping internal `http://civitas-dev:8081/api/ping` → `{"status":true,"message":"OK"}`.
+- **Step 2 fullnex:** `output: 'standalone'` di `next.config.ts`, `Dockerfile` multi-stage `node:24-alpine`, `.dockerignore`, `docker-compose.server.yml`, `.env.server.example` (+ exception `!.env.server.example` di `.gitignore`). Commit `351b3be` di `proto1-fullnex`.
+- **Step 3 git:** deploy key ed25519 dibuat di server (`~/.ssh/wiwok_deploy`), terdaftar read-only di repo (ID 156547855) via `gh`. Clone pakai alias SSH `github.com-wiwok` → `~/wiwokdetok`.
+- **Step 4 env:** `~/wiwokdetok/.env.server` (chmod 600) — password Postgres & `JWT_SECRET_KEY` di-generate baru via `openssl rand -hex`. Berisi juga `POSTGRES_*` untuk container db.
+- **Step 5 DB & app:** `wiwok-db` (postgres:16-alpine, volume named `wiwokdetok_wiwok-db-data` di SSD, tanpa publish port) up; schema di-push via one-off container image builder (`npx prisma db push`, catatan: flag `--skip-generate` sudah tidak ada di Prisma 7); `wiwok-app` up di **:20130**.
+- **Step 6 verifikasi:** `/` → 307 `/workspaces`, `/login` 200, dari LAN PC `http://10.13.8.86:20130` OK. Smoke test auth chain: POST `/api/login` kredensial dummy → **401 `User not found` dari LDAP kampus via civitas-dev** (rantai app→civitas→LDAP terbukti nyambung). 17 tabel terbentuk di DB. `/api/workspaces` tanpa token → 401. **Belum:** login LDAP asli + bikin task via UI — perlu Feby login sendiri di browser.
+- **Step 7 backup:** `~/wiwokdetok/backup.sh` (pg_dump wiwok-db + `.env.server` + `.env` civitas → `/data/backups/wiwok/`, rotasi 14, folder dibuat via trik docker chown 1000 chmod 700). Cron `45 3 * * *` terpasang, test run manual OK, dan cron sempat jalan sendiri jam 03:45 → arsip kebentuk.
+- **Data dev PC:** TIDAK dimigrasi (opsional per rencana) — kalau mau, `pg_dump` dari Postgres PC → restore ke `wiwok-db`.
+- **Follow-up:** (1) Feby login LDAP asli di `http://10.13.8.86:20130` untuk verifikasi final + auto-register; (2) update `e:\SonOfBrian\PRD.md` dari workspace SoB bahwa tracker live (prasyarat Fase 2); (3) sebelum fase VPS kantor: scrub `.env` dari git history + rotasi secret (aturan §5.4).
+
+| Item | Nilai |
+|---|---|
+| URL | `http://10.13.8.86:20130` (LAN/Tailscale only) |
+| Path server | app `~/wiwokdetok`, civitas `~/civitas-dev`, backup `/data/backups/wiwok/` |
+| Container | `wiwok-app` (:20130), `wiwok-db` (internal), `civitas-dev` (127.0.0.1:9003 debug) — semua network `wiwok-net`, `restart: unless-stopped` |
+| Update ke depan | push ke `proto1-fullnex` → di server: `cd ~/wiwokdetok && git pull && docker compose -f docker-compose.server.yml up -d --build wiwok-app` |
+| Tanggal live | 2026-07-07 |
