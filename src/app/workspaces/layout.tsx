@@ -3,6 +3,8 @@
 import { useAuthStore } from '@/store/auth'
 import { useRouter, usePathname } from 'next/navigation'
 import Link from 'next/link'
+import Image from 'next/image'
+import logo from '@/app/icon.jpg'
 import { LogOut, Home, FolderKanban, Settings, Bell, ChevronLeft, Command, Search, Moon, Sun, Plus, ChevronDown, ChevronRight, BarChart2, Calendar, Timer, AlarmClock } from 'lucide-react'
 import { FloatingNotification } from '@/components/notifications/FloatingNotification'
 import { Header } from '@/components/layout/Header'
@@ -79,14 +81,15 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
         <div className="h-14 flex items-center justify-between px-4 border-b border-[var(--border-subtle)]">
           {!collapsed && (
             <div className="flex items-center gap-2 overflow-hidden whitespace-nowrap">
+              <Image src={logo} alt="WIWOKDETOK" className="w-6 h-6 rounded shrink-0" />
               <span className="font-bold text-base tracking-tight text-[var(--text-primary)] truncate">
                 WIWOKDETOK
               </span>
             </div>
           )}
           {collapsed && (
-            <div className="w-8 h-8 bg-black dark:bg-white rounded flex items-center justify-center shrink-0 mx-auto cursor-pointer" onClick={() => setCollapsed(false)}>
-              <span className="font-bold text-lg text-white dark:text-black">W</span>
+            <div className="w-8 h-8 rounded overflow-hidden shrink-0 mx-auto cursor-pointer" onClick={() => setCollapsed(false)}>
+              <Image src={logo} alt="WIWOKDETOK" className="w-full h-full object-cover" />
             </div>
           )}
           {!collapsed && (
