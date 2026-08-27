@@ -1,0 +1,12 @@
+services:
+  oracle-bridge:
+    build: .
+    container_name: oracle-bridge
+    env_file: .env
+    networks:
+      - wiwok-net
+    restart: unless-stopped
+
+networks:
+  wiwok-net:
+    external: true

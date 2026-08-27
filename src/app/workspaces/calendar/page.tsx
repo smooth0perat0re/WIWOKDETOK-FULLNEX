@@ -32,8 +32,9 @@ export default function CalendarPage() {
       setIsLoadingHolidays(true)
       try {
         const year = currentDate.getFullYear()
-        // Using Nager.Date API for Indonesia (ID)
-        const response = await fetch(`https://date.nager.at/api/v3/PublicHolidays/${year}/ID`)
+        // Diproxy lewat backend sendiri — src/app/api/calendar/holidays punya 2 source
+        // (tabel internal EIS.LIBUR_NASIONAL / API publik Nager.Date), switchable di sana.
+        const response = await fetch(`/api/calendar/holidays?year=${year}`)
         if (response.ok) {
           const data = await response.json()
           setHolidays(data)
