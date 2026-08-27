@@ -102,9 +102,9 @@ export default function DashboardPage() {
   const dateString = `${currentTime.toLocaleDateString('en-US', dateOptions)} ${currentTime.toLocaleTimeString('en-US', timeOptions)}`
 
   return (
-    <div className="w-full animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
+    <div className="w-full flex-1 flex flex-col min-h-0 animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out">
       {/* Top Grid for Greetings and Quicklinks */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12 shrink-0">
         <div className="lg:col-span-2 text-center flex flex-col items-center">
           <h1 className="text-2xl font-semibold text-[var(--text-primary)] mb-2">
             {greeting}, {user?.name || 'Guest'}
@@ -122,7 +122,7 @@ export default function DashboardPage() {
 
         <div className="lg:col-span-1 relative z-10">
           {/* Quicklinks (absolutely positioned to align with Breadcrumbs above) */}
-          <div className="hidden lg:block absolute left-0 -top-[52px]">
+          <div className="hidden lg:block absolute left-0 -top-[44px]">
             <div className="flex flex-col items-start">
               <div className="flex items-center justify-start mb-4">
                 <h2 className="text-sm font-semibold text-[var(--text-primary)]">Quicklinks</h2>
@@ -169,11 +169,11 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
-        <div className="lg:col-span-2 space-y-10">
-          
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 flex-1 min-h-0">
+        <div className="lg:col-span-2 flex flex-col gap-10 min-h-0">
+
           {/* Remember what you work for */}
-          <div>
+          <div className="shrink-0">
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-2">
                 Remember what you work for
@@ -192,30 +192,20 @@ export default function DashboardPage() {
               {Array.from({ length: 4 }).map((_, i) => {
                 const photo = photos?.[i];
 
-                return (
-                  <div key={photo?.id || `empty-${i}`} className="flex-1 min-w-[150px] h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
-                    {photo ? (
-                      <>
-                        <img src={photo.photo_url} alt="Motivation" className="w-full h-full object-cover" />
-                        <button
-                          onClick={() => deletePhoto(photo.id)}
-                          className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all"
-                        >
-                          <X className="w-4 h-4" />
-                        </button>
-                      </>
-                    ) : (
-                      <div
-                        onClick={() => fileInputRef.current?.click()}
-                        className="absolute inset-0 flex items-center justify-center opacity-50 cursor-pointer hover:opacity-100 hover:bg-[var(--bg-tertiary)] transition-all"
-                      >
-                        <div className="text-center">
-                          <div className="w-12 h-12 mx-auto rounded bg-[var(--bg-tertiary)] flex items-center justify-center mb-2 shadow-sm">
-                            <Plus className="w-6 h-6 text-[var(--text-muted)] group-hover:text-brand-500 transition-colors" />
-                          </div>
+                return photo ? (
+                  <PhotoTile key={photo.id} photo={photo} onDelete={deletePhoto} />
+                ) : (
+                  <div key={`empty-${i}`} className="flex-1 min-w-[150px] h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      className="absolute inset-0 flex items-center justify-center opacity-50 cursor-pointer hover:opacity-100 hover:bg-[var(--bg-tertiary)] transition-all"
+                    >
+                      <div className="text-center">
+                        <div className="w-12 h-12 mx-auto rounded bg-[var(--bg-tertiary)] flex items-center justify-center mb-2 shadow-sm">
+                          <Plus className="w-6 h-6 text-[var(--text-muted)] group-hover:text-brand-500 transition-colors" />
                         </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                 )
               })}
@@ -223,8 +213,8 @@ export default function DashboardPage() {
           </div>
 
           {/* Recents & Sticky Notes Tabs */}
-          <div>
-            <div className="flex items-center gap-6 mb-3 relative">
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex items-center gap-6 mb-3 relative shrink-0">
               <div className="relative">
                 <button 
                   onClick={() => setIsTabDropdownOpen(!isTabDropdownOpen)}
@@ -259,7 +249,7 @@ export default function DashboardPage() {
               </div>
             </div>
             
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl p-10 flex flex-col items-center justify-center text-center min-h-[300px]">
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl p-10 flex flex-col items-center justify-center text-center min-h-[300px] flex-1">
               {activeTab === 'recents' ? (
                 recents && recents.length > 0 ? (
                   <ul className="w-full text-left self-start">
@@ -306,8 +296,8 @@ export default function DashboardPage() {
 
         </div> {/* End of lg:col-span-2 */}
 
-        <div className="lg:col-span-1 flex flex-col relative">
-          <div className="flex items-center gap-6 mb-3 relative z-30">
+        <div className="lg:col-span-1 flex flex-col relative min-h-0">
+          <div className="flex items-center gap-6 mb-3 relative z-30 shrink-0">
             <div className="relative">
               <button 
                 onClick={() => setIsRightTabDropdownOpen(!isRightTabDropdownOpen)}
@@ -329,7 +319,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="flex-1 min-h-[300px] h-[400px]">
+          <div className="flex-1 min-h-[300px]">
             {rightTab === 'chart' ? (
               <WeeklyActivityChart type="dashboard" hideTitle={true} />
             ) : (
@@ -341,6 +331,55 @@ export default function DashboardPage() {
 
       <QuicklinkModal isOpen={isQuicklinkModalOpen} onClose={() => setQuicklinkModalOpen(false)} initialData={editingQuicklink} />
       <StickyModal isOpen={isStickyModalOpen} onClose={() => setStickyModalOpen(false)} initialData={editingSticky} />
+    </div>
+  )
+}
+
+function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => void }) {
+  const [isPinned, setIsPinned] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+
+  const isOpen = isPinned || isHovering
+
+  // Unpin when clicking anywhere except this tile itself (image click below toggles pin)
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) {
+        return
+      }
+      setIsPinned(false)
+    }
+
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  return (
+    <div
+      ref={wrapperRef}
+      className="relative flex-1 min-w-[150px]"
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <div
+        onClick={() => setIsPinned((prev) => !prev)}
+        className="h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group cursor-pointer"
+      >
+        <img src={photo.photo_url} alt="Motivation" className="w-full h-full object-cover" />
+        <button
+          onClick={(e) => { e.stopPropagation(); onDelete(photo.id) }}
+          className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all"
+        >
+          <X className="w-4 h-4" />
+        </button>
+      </div>
+
+      {isOpen && (
+        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl shadow-xl p-1.5 animate-in fade-in slide-in-from-top-2">
+          <img src={photo.photo_url} alt="Motivation preview" className="max-w-[280px] max-h-[280px] w-auto h-auto object-contain rounded-lg" />
+        </div>
+      )}
     </div>
   )
 }

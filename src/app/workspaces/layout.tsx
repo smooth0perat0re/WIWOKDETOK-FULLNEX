@@ -282,7 +282,7 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
         {/* Scrollable Main View */}
         <div className="flex-1 overflow-auto relative">
-          <div className="absolute inset-0 w-full px-6 pb-6 pt-6 md:px-10 md:pb-10 md:pt-6">
+          <div className="absolute inset-0 w-full px-6 pb-6 pt-6 md:px-10 md:pb-10 md:pt-6 flex flex-col">
             <Breadcrumbs />
             {children}
           </div>
