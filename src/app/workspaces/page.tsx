@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect, useRef } from 'react'
+import { createPortal } from 'react-dom'
 import { Plus, Maximize2, Link as LinkIcon, FileText, Layers, Search, Clock, CloudSun, ChevronDown, X, Upload, Pencil, Trash2 } from 'lucide-react'
 import { useAuthStore } from '@/store/auth'
 import { useQuicklinks, useAddQuicklink, useUpdateQuicklink, useDeleteQuicklink, useRecents, useStickies, useAddSticky, useUpdateSticky, useDeleteSticky, useDashboardPhotos, useAddDashboardPhoto, useDeleteDashboardPhoto } from '@/lib/hooks'
@@ -169,8 +170,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 flex-1 min-h-0">
-        <div className="lg:col-span-2 flex flex-col gap-10 min-h-0">
+      <div className="flex flex-col lg:flex-row gap-8 mb-8 flex-1 min-h-0">
+        <div className="lg:w-2/3 flex flex-col gap-10 min-h-0">
 
           {/* Remember what you work for */}
           <div className="shrink-0">
@@ -195,7 +196,7 @@ export default function DashboardPage() {
                 return photo ? (
                   <PhotoTile key={photo.id} photo={photo} onDelete={deletePhoto} />
                 ) : (
-                  <div key={`empty-${i}`} className="flex-1 min-w-[150px] h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
+                  <div key={`empty-${i}`} className="flex-1 min-w-[150px] h-40 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
                     <div
                       onClick={() => fileInputRef.current?.click()}
                       className="absolute inset-0 flex items-center justify-center opacity-50 cursor-pointer hover:opacity-100 hover:bg-[var(--bg-tertiary)] transition-all"
@@ -296,7 +297,7 @@ export default function DashboardPage() {
 
         </div> {/* End of lg:col-span-2 */}
 
-        <div className="lg:col-span-1 flex flex-col relative min-h-0">
+        <div className="lg:w-1/3 flex flex-col relative min-h-0">
           <div className="flex items-center gap-6 mb-3 relative z-30 shrink-0">
             <div className="relative">
               <button 
@@ -338,11 +339,18 @@ export default function DashboardPage() {
 function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => void }) {
   const [isPinned, setIsPinned] = useState(false)
   const [isHovering, setIsHovering] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const wrapperRef = useRef<HTMLDivElement>(null)
 
   const isOpen = isPinned || isHovering
 
-  // Unpin when clicking anywhere except this tile itself (image click below toggles pin)
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  // Unpin when clicking anywhere except this tile itself (image click below toggles pin).
+  // The lightbox overlay lives in a portal outside this ref, so clicking it (backdrop or
+  // the enlarged photo) counts as "outside" too and closes it — same as clicking elsewhere.
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) {
@@ -364,7 +372,7 @@ function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => voi
     >
       <div
         onClick={() => setIsPinned((prev) => !prev)}
-        className="h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group cursor-pointer"
+        className="h-40 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group cursor-pointer"
       >
         <img src={photo.photo_url} alt="Motivation" className="w-full h-full object-cover" />
         <button
@@ -375,10 +383,15 @@ function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => voi
         </button>
       </div>
 
-      {isOpen && (
-        <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 z-50 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl shadow-xl p-1.5 animate-in fade-in slide-in-from-top-2">
-          <img src={photo.photo_url} alt="Motivation preview" className="max-w-[280px] max-h-[280px] w-auto h-auto object-contain rounded-lg" />
-        </div>
+      {isOpen && mounted && createPortal(
+        <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-8 animate-in fade-in duration-150">
+          <img
+            src={photo.photo_url}
+            alt="Motivation preview"
+            className="max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
+          />
+        </div>,
+        document.body
       )}
     </div>
   )
