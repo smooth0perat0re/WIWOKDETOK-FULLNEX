@@ -348,6 +348,14 @@ function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => voi
     setMounted(true)
   }, [])
 
+  // Close overrides both flags — the lightbox backdrop covers the thumbnail itself, so once
+  // it's open the browser may never fire mouseleave on the wrapper (no pointer movement needed
+  // to trigger it), leaving isHovering stuck true forever. Always reset both explicitly.
+  const close = () => {
+    setIsPinned(false)
+    setIsHovering(false)
+  }
+
   // Unpin when clicking anywhere except this tile itself (image click below toggles pin).
   // The lightbox overlay lives in a portal outside this ref, so clicking it (backdrop or
   // the enlarged photo) counts as "outside" too and closes it — same as clicking elsewhere.
@@ -356,7 +364,7 @@ function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => voi
       if (wrapperRef.current && wrapperRef.current.contains(event.target as Node)) {
         return
       }
-      setIsPinned(false)
+      close()
     }
 
     document.addEventListener("mousedown", handleClickOutside)
@@ -384,10 +392,20 @@ function PhotoTile({ photo, onDelete }: { photo: any, onDelete: (id: any) => voi
       </div>
 
       {isOpen && mounted && createPortal(
-        <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-8 animate-in fade-in duration-150">
+        <div
+          className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-8 animate-in fade-in duration-150"
+          onClick={close}
+        >
+          <button
+            onClick={(e) => { e.stopPropagation(); close() }}
+            className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
           <img
             src={photo.photo_url}
             alt="Motivation preview"
+            onClick={(e) => e.stopPropagation()}
             className="max-w-[90vw] max-h-[90vh] w-auto h-auto object-contain rounded-lg shadow-2xl"
           />
         </div>,
