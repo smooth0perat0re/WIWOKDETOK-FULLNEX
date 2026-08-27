@@ -213,17 +213,13 @@ export default function DashboardPage() {
                 </button>
                 
                 {isTabDropdownOpen && (
-                  <div className="absolute top-full left-0 mt-2 z-20 flex flex-col gap-1">
-                    {activeTab !== 'recents' && (
-                      <button onClick={() => { setActiveTab('recents'); setIsTabDropdownOpen(false); }} className="text-sm font-semibold text-left px-4 py-2 bg-[var(--bg-tertiary)] text-[var(--text-primary)] rounded-full hover:bg-[var(--bg-secondary)] whitespace-nowrap shadow-sm border border-[var(--border-subtle)]">
-                        Recents
-                      </button>
-                    )}
-                    {activeTab !== 'sticky' && (
-                      <button onClick={() => { setActiveTab('sticky'); setIsTabDropdownOpen(false); }} className="text-sm font-semibold text-left px-4 py-2 bg-[var(--bg-tertiary)] text-[var(--text-primary)] rounded-full hover:bg-[var(--bg-secondary)] whitespace-nowrap shadow-sm border border-[var(--border-subtle)]">
-                        Sticky Notes
-                      </button>
-                    )}
+                  <div className="absolute top-full left-0 mt-2 z-20 flex flex-col gap-1 w-48 bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl shadow-xl overflow-hidden">
+                    <button onClick={() => { setActiveTab('recents'); setIsTabDropdownOpen(false); }} className={`text-sm font-semibold text-left px-4 py-2 hover:bg-[var(--bg-secondary)] whitespace-nowrap transition-colors ${activeTab === 'recents' ? 'bg-[var(--bg-tertiary)]' : ''}`}>
+                      Recents
+                    </button>
+                    <button onClick={() => { setActiveTab('sticky'); setIsTabDropdownOpen(false); }} className={`text-sm font-semibold text-left px-4 py-2 hover:bg-[var(--bg-secondary)] whitespace-nowrap transition-colors ${activeTab === 'sticky' ? 'bg-[var(--bg-tertiary)]' : ''}`}>
+                      Sticky Notes
+                    </button>
                   </div>
                 )}
               </div>

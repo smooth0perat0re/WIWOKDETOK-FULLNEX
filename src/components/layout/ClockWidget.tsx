@@ -18,14 +18,18 @@ interface PrayerTimes {
 export function ClockWidget() {
   const [currentTime, setCurrentTime] = useState(new Date())
   const [mounted, setMounted] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
+  const [isPinned, setIsPinned] = useState(false)
+  const [isHovering, setIsHovering] = useState(false)
   const [prayerTimes, setPrayerTimes] = useState<PrayerTimes | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const dropdownRef = useRef<HTMLDivElement>(null)
+  const buttonRef = useRef<HTMLButtonElement>(null)
+
+  const isOpen = isPinned || isHovering
 
   useEffect(() => {
     setMounted(true)
-    const timer = setInterval(() => setCurrentTime(new Date()), 60000)
+    const timer = setInterval(() => setCurrentTime(new Date()), 1000)
     return () => clearInterval(timer)
   }, [])
 
@@ -57,12 +61,13 @@ export function ClockWidget() {
     }
   }, [isOpen, prayerTimes])
 
-  // Close dropdown when clicking outside
+  // Unpin when clicking anywhere except the clock button itself (button toggles pin via onClick below)
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false)
+      if (buttonRef.current && buttonRef.current.contains(event.target as Node)) {
+        return
       }
+      setIsPinned(false)
     }
 
     document.addEventListener("mousedown", handleClickOutside)
@@ -73,7 +78,7 @@ export function ClockWidget() {
     return <div className="w-24 h-full border-l border-[var(--border-subtle)] bg-[var(--bg-primary)]"></div>
   }
 
-  const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', hour12: false }
+  const timeOptions: Intl.DateTimeFormatOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }
   const timeString = currentTime.toLocaleTimeString('id-ID', timeOptions)
   
   // Custom date format for the widget DD/MM/YYYY
@@ -83,9 +88,15 @@ export function ClockWidget() {
   const dateString = `${day}/${month}/${year}`
 
   return (
-    <div className="relative h-full flex items-stretch border-l border-[var(--border-subtle)] bg-[var(--bg-primary)]" ref={dropdownRef}>
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
+    <div
+      className="relative h-full flex items-stretch border-l border-[var(--border-subtle)] bg-[var(--bg-primary)]"
+      ref={dropdownRef}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={() => setIsHovering(false)}
+    >
+      <button
+        ref={buttonRef}
+        onClick={() => setIsPinned((prev) => !prev)}
         className="px-4 flex flex-col justify-center items-center hover:bg-[var(--bg-tertiary)] transition-colors min-w-[100px]"
       >
         <div className="text-base font-semibold text-brand-500 tracking-tight flex items-center gap-1">

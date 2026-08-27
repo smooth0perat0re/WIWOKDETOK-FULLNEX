@@ -83,6 +83,10 @@ body {
   white-space: nowrap;
   overflow: hidden;
   border-right: 2px solid var(--text-primary);
+  /* Keep border-right (blinking caret) from eating into the text's own width under
+     the project's global border-box sizing — otherwise the last ~2px of text
+     (last character) gets clipped by overflow:hidden once width reaches 100%. */
+  box-sizing: content-box;
   width: 0;
   display: inline-block;
   animation: typing 3s steps(100, end) forwards, blink-caret .75s step-end infinite;
