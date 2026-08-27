@@ -172,35 +172,56 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <div className="lg:col-span-2 space-y-10">
           
-          {/* Work Talk AI */}
+          {/* Remember what you work for */}
           <div>
             <div className="flex items-center justify-between mb-3">
-              <h2 className="text-sm font-semibold text-[var(--text-primary)]">Ask Work Talk AI</h2>
+              <h2 className="text-sm font-semibold text-[var(--text-primary)] flex items-center gap-2">
+                Remember what you work for
+                {isUploadingPhoto && <span className="text-xs text-brand-500 animate-pulse">Uploading...</span>}
+              </h2>
             </div>
-            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl p-6 flex flex-col md:flex-row items-center gap-8 relative overflow-hidden group">
-              <div className="relative shrink-0 w-64 h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg shadow-sm overflow-hidden flex items-center justify-center">
-                 <div className="absolute inset-0 opacity-10 bg-gradient-to-br from-brand-500 to-purple-500"></div>
-                 <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded shadow-sm p-3 w-48 z-10 text-xs text-[var(--text-secondary)] transform -rotate-2 hover:rotate-0 transition-transform">
-                   <div className="flex items-center gap-2 mb-2 pb-2 border-b border-[var(--border-subtle)]">
-                     <div className="w-4 h-4 rounded bg-brand-500 text-white flex items-center justify-center text-[8px]">✓</div>
-                     <span>Acme Corp</span>
-                   </div>
-                   <div className="space-y-1.5">
-                     <div className="flex items-center gap-2 py-1"><Search className="w-3 h-3" /> Ask</div>
-                     <div className="flex items-center gap-2 py-1 bg-[var(--bg-tertiary)] rounded px-1 -mx-1"><Plus className="w-3 h-3" /> Build</div>
-                   </div>
-                 </div>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-[var(--text-primary)] mb-2">Work Talk AI can now take actions for you.</h3>
-                <p className="text-sm text-[var(--text-secondary)] mb-4">Use Build mode to create work items, cycles and more. Activate now to start Work Talk AI actions.</p>
-                <button className="bg-brand-500 hover:bg-brand-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
-                  Activate Build mode
-                </button>
-              </div>
+            <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl p-6 flex flex-wrap justify-between gap-4">
+              <input
+                type="file"
+                accept="image/*"
+                ref={fileInputRef}
+                onChange={handlePhotoUpload}
+                className="hidden"
+              />
+
+              {Array.from({ length: 4 }).map((_, i) => {
+                const photo = photos?.[i];
+
+                return (
+                  <div key={photo?.id || `empty-${i}`} className="flex-1 min-w-[150px] h-32 bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
+                    {photo ? (
+                      <>
+                        <img src={photo.photo_url} alt="Motivation" className="w-full h-full object-cover" />
+                        <button
+                          onClick={() => deletePhoto(photo.id)}
+                          className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </>
+                    ) : (
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        className="absolute inset-0 flex items-center justify-center opacity-50 cursor-pointer hover:opacity-100 hover:bg-[var(--bg-tertiary)] transition-all"
+                      >
+                        <div className="text-center">
+                          <div className="w-12 h-12 mx-auto rounded bg-[var(--bg-tertiary)] flex items-center justify-center mb-2 shadow-sm">
+                            <Plus className="w-6 h-6 text-[var(--text-muted)] group-hover:text-brand-500 transition-colors" />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
           </div>
-          
+
           {/* Recents & Sticky Notes Tabs */}
           <div>
             <div className="flex items-center gap-6 mb-3 relative">
@@ -317,54 +338,6 @@ export default function DashboardPage() {
           </div>
         </div>
       </div> {/* End of grid */}
-
-      {/* Remember what you work for */}
-      <div className="mt-2 w-full">
-        <h2 className="text-sm font-semibold text-[var(--text-primary)] mb-4 flex items-center gap-2">
-          Remember what you work for
-          {isUploadingPhoto && <span className="text-xs text-brand-500 animate-pulse">Uploading...</span>}
-        </h2>
-        <div className="bg-[var(--bg-primary)] border border-[var(--border-subtle)] rounded-xl p-6 flex flex-wrap justify-between gap-4">
-          <input 
-            type="file" 
-            accept="image/*"
-            ref={fileInputRef}
-            onChange={handlePhotoUpload}
-            className="hidden"
-          />
-          
-          {Array.from({ length: 4 }).map((_, i) => {
-            const photo = photos?.[i];
-            
-            return (
-              <div key={photo?.id || `empty-${i}`} className="flex-1 min-w-[150px] aspect-video bg-[var(--bg-secondary)] border border-[var(--border-subtle)] rounded-lg overflow-hidden relative group">
-                {photo ? (
-                  <>
-                    <img src={photo.photo_url} alt="Motivation" className="w-full h-full object-cover" />
-                    <button 
-                      onClick={() => deletePhoto(photo.id)}
-                      className="absolute top-2 right-2 bg-black/50 p-1.5 rounded-full text-white opacity-0 group-hover:opacity-100 hover:bg-red-500 transition-all"
-                    >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </>
-                ) : (
-                  <div 
-                    onClick={() => fileInputRef.current?.click()}
-                    className="absolute inset-0 flex items-center justify-center opacity-50 cursor-pointer hover:opacity-100 hover:bg-[var(--bg-tertiary)] transition-all"
-                  >
-                    <div className="text-center">
-                      <div className="w-12 h-12 mx-auto rounded bg-[var(--bg-tertiary)] flex items-center justify-center mb-2 shadow-sm">
-                        <Plus className="w-6 h-6 text-[var(--text-muted)] group-hover:text-brand-500 transition-colors" />
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )
-          })}
-        </div>
-      </div>
 
       <QuicklinkModal isOpen={isQuicklinkModalOpen} onClose={() => setQuicklinkModalOpen(false)} initialData={editingQuicklink} />
       <StickyModal isOpen={isStickyModalOpen} onClose={() => setStickyModalOpen(false)} initialData={editingSticky} />
