@@ -2,7 +2,7 @@
 
 import { usePathname, useParams } from 'next/navigation'
 import Link from 'next/link'
-import { Home, Bell, Settings, ChevronRight } from 'lucide-react'
+import { Home, Bell, Settings, ChevronRight, Calendar, FileText, Timer, AlarmClock } from 'lucide-react'
 import { useWorkspaces, useProjects } from '@/lib/hooks'
 
 export function Breadcrumbs() {
@@ -41,6 +41,42 @@ export function Breadcrumbs() {
       <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
         <Settings className="w-3.5 h-3.5 text-[var(--text-muted)]" />
         <span className="text-[var(--text-primary)] font-medium">SETTINGS</span>
+      </div>
+    )
+  }
+
+  if (pathname === '/calendar') {
+    return (
+      <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
+        <Calendar className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+        <span className="text-[var(--text-primary)] font-medium">CALENDAR</span>
+      </div>
+    )
+  }
+
+  if (pathname === '/personal-notes') {
+    return (
+      <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
+        <FileText className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+        <span className="text-[var(--text-primary)] font-medium">NOTES</span>
+      </div>
+    )
+  }
+
+  if (pathname === '/time-management/pomodoro') {
+    return (
+      <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
+        <Timer className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+        <span className="text-[var(--text-primary)] font-medium">POMODORO TIMER</span>
+      </div>
+    )
+  }
+
+  if (pathname === '/time-management/alarm') {
+    return (
+      <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
+        <AlarmClock className="w-3.5 h-3.5 text-[var(--text-muted)]" />
+        <span className="text-[var(--text-primary)] font-medium">ALARM</span>
       </div>
     )
   }
