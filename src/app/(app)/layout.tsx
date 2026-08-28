@@ -108,9 +108,9 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
             </button>
           )}
 
-          <NavItem href="/workspaces" icon={<Home className="w-4 h-4" />} label="Home" collapsed={collapsed} />
-          <NavItem href="/workspaces/inbox" icon={<Bell className="w-4 h-4" />} label="Inbox" collapsed={collapsed} />
-          <NavItem href="/workspaces/calendar" icon={<Calendar className="w-4 h-4" />} label="Calendar" collapsed={collapsed} />
+          <NavItem href="/dashboard" icon={<Home className="w-4 h-4" />} label="Home" collapsed={collapsed} />
+          <NavItem href="/inbox" icon={<Bell className="w-4 h-4" />} label="Inbox" collapsed={collapsed} />
+          <NavItem href="/calendar" icon={<Calendar className="w-4 h-4" />} label="Calendar" collapsed={collapsed} />
 
           {/* Time Management Section */}
           <div className="mt-4 mb-1 px-2 flex items-center justify-between group">
@@ -127,17 +127,17 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
           
           {isTimeManagementExpanded && (
             <>
-              <NavItem 
-                href="/workspaces/time-management/pomodoro" 
-                icon={<Timer className="w-4 h-4" />} 
-                label="Pomodoro Timer" 
-                collapsed={collapsed} 
+              <NavItem
+                href="/time-management/pomodoro"
+                icon={<Timer className="w-4 h-4" />}
+                label="Pomodoro Timer"
+                collapsed={collapsed}
               />
-              <NavItem 
-                href="/workspaces/time-management/alarm" 
-                icon={<AlarmClock className="w-4 h-4" />} 
-                label="Alarm" 
-                collapsed={collapsed} 
+              <NavItem
+                href="/time-management/alarm"
+                icon={<AlarmClock className="w-4 h-4" />}
+                label="Alarm"
+                collapsed={collapsed}
               />
             </>
           )}
@@ -214,8 +214,8 @@ export default function WorkspaceLayout({ children }: { children: React.ReactNod
 
               {/* Notes Item with Edit Hover */}
               <div className="relative group/note">
-                <NavItem 
-                  href="/workspaces/personal-notes" 
+                <NavItem
+                  href="/personal-notes"
                   icon={<div className="w-4 h-4 flex items-center justify-center text-sm">{user?.personal_notes_icon || '📝'}</div>} 
                   label="Notes" 
                   collapsed={collapsed} 

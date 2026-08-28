@@ -1,3 +1,5 @@
+<!-- Pusat konteks lintas-project: baca E:\BrianCore\BRIEF.md + PROJECTS.md dulu. Log → E:\BrianCore\history_activity.md tag [wiwokdetok]. -->
+
 <!-- BEGIN:nextjs-agent-rules -->
 # This is NOT the Next.js you know
 

@@ -18,7 +18,7 @@ export function Breadcrumbs() {
   const currentWorkspace = workspaces?.find((w: any) => w.slug === workspaceSlug)
   const currentProject = projects?.find((p: any) => p.id.toString() === projectId)
 
-  if (!pathname || pathname === '/workspaces') {
+  if (!pathname || pathname === '/dashboard') {
     return (
       <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
         <Home className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -27,7 +27,7 @@ export function Breadcrumbs() {
     )
   }
 
-  if (pathname === '/workspaces/inbox') {
+  if (pathname === '/inbox') {
     return (
       <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
         <Bell className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -36,7 +36,7 @@ export function Breadcrumbs() {
     )
   }
 
-  if (pathname === '/workspaces/settings') {
+  if (pathname === '/settings') {
     return (
       <div className="flex items-center gap-1.5 text-sm text-[var(--text-secondary)] mb-6 opacity-70">
         <Settings className="w-3.5 h-3.5 text-[var(--text-muted)]" />
@@ -50,7 +50,7 @@ export function Breadcrumbs() {
   breadcrumbs.push({
     icon: <Home className="w-3.5 h-3.5" />,
     label: 'DASHBOARD',
-    href: '/workspaces'
+    href: '/dashboard'
   })
 
   if (workspaceSlug) {

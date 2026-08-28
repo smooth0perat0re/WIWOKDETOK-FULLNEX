@@ -21,7 +21,7 @@ export function TopBarBumper({ pathname }: TopBarBumperProps) {
     return <div className="h-full w-full flex items-center px-4 overflow-hidden shrink-0 text-sm text-[var(--text-secondary)]"></div>
   }
 
-  const isHome = !pathname || pathname === '/workspaces' || pathname === '/'
+  const isHome = !pathname || pathname === '/dashboard' || pathname === '/'
 
   return (
     <div className="h-full w-full flex items-center overflow-hidden shrink-0 px-4">

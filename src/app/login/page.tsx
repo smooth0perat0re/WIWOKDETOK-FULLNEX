@@ -24,7 +24,7 @@ export default function LoginPage() {
       if (response.data && response.data.token) {
         setAuth(response.data.token, response.data.user)
         toast.success('Welcome back!')
-        router.push('/workspaces')
+        router.push('/dashboard')
       }
     } catch (err: any) {
       // Error handling is mostly done globally in api.ts interceptor,
