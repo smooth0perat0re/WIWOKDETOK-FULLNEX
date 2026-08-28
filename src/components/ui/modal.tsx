@@ -30,7 +30,7 @@ export function Modal({ isOpen, onClose, title, description, className, children
             )}
           </div>
           
-          <div className="mt-2">
+          <div className="mt-2 flex-1 min-h-0">
             {children}
           </div>
 
